@@ -360,6 +360,7 @@ const handleExcelUpload = async () => {
     <th>Status</th>
     <th>Actions</th>
                       <th>Active OR Pending</th>
+                      <th>Permenent Details</th>
                       <th>View Details</th>
                       
                     </tr>

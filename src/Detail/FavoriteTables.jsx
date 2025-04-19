@@ -12,6 +12,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MdDeleteForever } from 'react-icons/md';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const FavoriteTables = () => {
     const [favoriteRequestsData, setFavoriteRequestsData] = useState([]);
@@ -22,6 +24,32 @@ const FavoriteTables = () => {
     const [search, setSearch] = useState("");
     const [fromDate, setFromDate] = useState("");
     const [endDate, setEndDate] = useState("");
+
+    const adminName = useSelector((state) => state.admin.name);
+  
+
+    // ✅ Record view on mount
+ useEffect(() => {
+   const recordDashboardView = async () => {
+     try {
+       await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+         userName: adminName,
+         viewedFile: "Favorite Table",
+         viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+       });
+       console.log("Dashboard view recorded");
+     } catch (err) {
+       console.error("Failed to record dashboard view:", err);
+     }
+   };
+
+   if (adminName) {
+     recordDashboardView();
+   }
+ }, [adminName]);
+
 
     // Fetch all favorite data for owner and buyer
     const fetchAllFavoriteData = async () => {
@@ -190,44 +218,7 @@ const FavoriteTables = () => {
                         <p>No favorite owner data found.</p>
                     )}
 
-                    {/* Favorite Buyer Data */}
-                    <h3 className='text-warning mt-5 mb-3 mt-4'>Favorite Buyer Data</h3>
-                    {filterData(propertiesData).length > 0 ? (
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>PPC ID</th>
-                                    <th>Posted User Phone Number</th>
-                                    {/* <th>Property Details</th> */}
-                                    <th>Favorited User Phone Numbers</th>
-                                    <th>Views</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filterData(propertiesData).map((property, index) => (
-                                    <tr key={index}>
-                                        <td>{property.ppcId}</td>
-                                        <td>{property.postedUserPhoneNumber}</td>
-                                        {/* <td>{property.propertyDetails || 'No details available'}</td> */}
-                                        <td>{(property.favoritedUsers || []).join(', ')}</td>
-                                        <td>{property.views || 0}</td>
-                                        <td>{property.createdAt ? new Date(property.createdAt).toLocaleString() : 'N/A'}</td>
-                                        <td>{property.updatedAt ? new Date(property.updatedAt).toLocaleString() : 'N/A'}</td>
-                                        <td>
-                                            <button className="btn btn-danger" onClick={() => handleDelete(property.ppcId)}>
-                                                <MdDeleteForever size={24} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No favorite buyer data found.</p>
-                    )}
+                  
                 </>
             )}
         </div>

@@ -42,7 +42,7 @@ const [appLoginCount, setAppLoginCount] = useState(0);
 useEffect(() => {
   const fetchLoginModeCount = async () => {
     try {
-      const res = await axios.get('/user/login-mode-counts');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/login-mode-counts`);
       setWebLoginCount(res.data.webLoginCount);
       setAppLoginCount(res.data.appLoginCount);
     } catch (error) {
@@ -58,7 +58,7 @@ useEffect(() => {
     // Fetch the total interest count from the backend
     const fetchTotalInterestCount = async () => {
       try {
-        const response = await axios.get('/total-interest-count'); // Your API endpoint
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/total-interest-count`); // Your API endpoint
         setTotalInterestCount(response.data.totalInterestCount);
       } catch (error) {
         console.error("Error fetching total interest count", error);
@@ -71,7 +71,7 @@ useEffect(() => {
     // Fetch the total contact count from the backend
     const fetchTotalContactCount = async () => {
       try {
-        const response = await axios.get('/total-contact-count'); // API endpoint
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/total-contact-count`); // API endpoint
         setTotalContactCount(response.data.totalContactCount);
       } catch (error) {
         console.error("Error fetching total contact count", error);
@@ -160,6 +160,8 @@ useEffect(() => {
 
     fetchPendingCount();
   }, []);
+
+
   // Fetch the deleted properties count
   useEffect(() => {
     const fetchDeletedCount = async () => {

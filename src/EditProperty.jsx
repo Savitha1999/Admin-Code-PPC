@@ -26,6 +26,8 @@ import { FaKitchenSet } from 'react-icons/fa6';
 import { BsBuildingsFill } from 'react-icons/bs';
 import { GiHouse, GiGears } from 'react-icons/gi';
 import { FaClock, FaRegAddressCard } from 'react-icons/fa6';
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 function EditProperty() {
   const location = useLocation();
@@ -69,11 +71,40 @@ function EditProperty() {
     numberOfFloors: "",
     carParking: "",
     bestTimeToCall: "",
+    price:"",
   });
 
   const [photos, setPhotos] = useState([]);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [video, setVideo] = useState(null);
+
+   
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "EditProperty ",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
+
+
   const [countryCodes, setCountryCodes] = useState([
     { code: "+1", country: "USA/Canada" },
     { code: "+44", country: "UK" },
@@ -129,6 +160,7 @@ function EditProperty() {
           state: data.state || "",
           city: data.city || "",
           district: data.district || "",
+          price:data.price || "",
           area: data.area || "",
           streetName: data.streetName || "",
           doorNumber: data.doorNumber || "",
@@ -214,29 +246,7 @@ function EditProperty() {
   const removeVideo = () => {
     setVideo(null);
   };
-  // const handlePhotoUpload = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   const maxSize = 10 * 1024 * 1024; // 10MB size limit
-  //   if (photos.length + files.length <= 15) {
-  //     files.forEach((file) => {
-  //       if (file.size > maxSize) {
-  //         alert('File size exceeds the 10MB limit');
-  //         return;
-  //       }
-  //     });
-  //     setPhotos([...photos, ...files]);
-  //     setSelectedPhotoIndex(0);
-  //   } else {
-  //     alert('Maximum 15 photos can be uploaded.');
-  //   }
-  // };
-
-  // const removePhoto = (index) => {
-  //   setPhotos(photos.filter((_, i) => i !== index));
-  //   if (index === selectedPhotoIndex) {
-  //     setSelectedPhotoIndex(0);
-  //   }
-  // };
+ 
 
 
   
@@ -355,6 +365,54 @@ function EditProperty() {
         carParking: <FaCar color="#2F747F" />,
         bestTimeToCall: <FaClock color="#2F747F" />,
       };
+
+      const fieldLabels = {
+        propertyMode: "Property Mode",
+        propertyType: "Property Type",
+        price: "Price",
+        propertyAge: "Property Age",
+        bankLoan: "Bank Loan",
+        negotiation: "Negotiation",
+        length: "Length",
+        breadth: "Breadth",
+        totalArea: "Total Area",
+        ownership: "Ownership",
+        bedrooms: "Bedrooms",
+        kitchen: "Kitchen",
+        kitchenType: "Kitchen Type",
+        balconies: "Balconies",
+        floorNo: "Floor No.",
+        areaUnit: "Area Unit",
+        propertyApproved: "Property Approved",
+        postedBy: "Posted By",
+        facing: "Facing",
+        salesMode: "Sales Mode",
+        salesType: "Sales Type",
+        description: "Description",
+        furnished: "Furnished",
+        lift: "Lift",
+        attachedBathrooms: "Attached Bathrooms",
+        western: "Western Toilet",
+        numberOfFloors: "Number of Floors",
+        carParking: "Car Parking",
+        rentalPropertyAddress: "Property Address",
+        country: "Country",
+        state: "State",
+        city: "City",
+        district: "District",
+        area: "Area",
+        streetName: "Street Name",
+        doorNumber: "Door Number",
+        nagar: "Nagar",
+        ownerName: "Owner Name",
+        email: "Email",
+        phoneNumber: "Phone Number",
+        phoneNumberCountryCode: "Phone Country Code",
+        alternatePhone: "Alternate Phone",
+        alternatePhoneCountryCode: "Alternate Phone Country Code",
+        bestTimeToCall: "Best Time to Call",
+      };
+      
     const renderDropdown = (field) => {
       const options = dataList[field] || [];
       const filteredOptions = options.filter((option) =>
@@ -382,6 +440,17 @@ function EditProperty() {
               animation: 'popupOpen 0.3s ease-in-out',
             }}
           >
+                        <div
+          style={{
+            fontWeight: "bold",
+            fontSize: "16px",
+            marginBottom: "10px",
+            textAlign: "start",
+            color: "#019988",
+          }}
+        >
+           {fieldLabels[field] || "Property Field"}
+        </div>
             <div
               style={{
                 display: 'flex',
@@ -625,7 +694,6 @@ function EditProperty() {
 
 
 
-  <div>
   {/* Property Mode */}
   <div className="form-group">
     <label style={{ width: '100%'}}>
@@ -739,111 +807,10 @@ function EditProperty() {
     />
   </div>
   </div>
-  {/* Property Age */}
-  <div className="form-group">
-    <label style={{ width: '100%'}}>
-    <label>Property Age </label>
-
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div style={{ flex: "1" }}>
-          <select
-            name="propertyAge"
-            value={formData.propertyAge || ""}
-            onChange={handleFieldChange}
-            className="form-control"
-            style={{ display: "none" }} // Hide the default <select> dropdown
-          >
-            <option value="">Select Property Age</option>
-            {dataList.propertyAge?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <button
-            className="m-0"
-            type="button"
-            onClick={() => toggleDropdown("propertyAge")}
-            style={{
-              cursor: "pointer",
-              border: "1px solid #2F747F",
-              padding: "10px",
-              background: "#fff",
-              borderRadius: "5px",
-              width: "100%",
-              textAlign: "left",
-              color: "#2F747F",
-            }}
-          >
-            <span style={{ marginRight: "10px" }}>
-              {fieldIcons.propertyAge || <FaHome />}
-            </span>
-            {formData.propertyAge || "Select Property Age"}
-          </button>
-
-          {renderDropdown("propertyAge")}
-        </div>
-      </div>
-    </label>
-  </div>
-
-  {/* Bank Loan */}
-
-  <div className="form-group">
-    <label style={{ width: '100%'}}>
-    <label>Bank Loan </label>
-
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div style={{ flex: "1" }}>
-          <select
-            name="bankLoan"
-            value={formData.bankLoan || ""}
-            onChange={handleFieldChange}
-            className="form-control"
-            style={{ display: "none" }} // Hide the default <select> dropdown
-          >
-            <option value="">Select Bank Loan</option>
-            {dataList.bankLoan?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <button
-            className="m-0"
-            type="button"
-            onClick={() => toggleDropdown("bankLoan")}
-            style={{
-              cursor: "pointer",
-              border: "1px solid #2F747F",
-              padding: "10px",
-              background: "#fff",
-              borderRadius: "5px",
-              width: "100%",
-              textAlign: "left",
-              color: "#2F747F",
-            }}
-          >
-            <span style={{ marginRight: "10px" }}>
-              {fieldIcons.bankLoan || <FaHome />}
-            </span>
-            {formData.bankLoan || "Select Bank Loan"}
-          </button>
-
-          {renderDropdown("bankLoan")}
-        </div>
-      </div>
-    </label>
-  </div>
-
-  </div>
-{/* // )} */}
 
 
-{/* {currentStep >= 2 && ( */}
-                <div>
+
+
   {/* Negotiation */}
 
   <div className="form-group">
@@ -1041,10 +1008,8 @@ function EditProperty() {
     </label>
   </div>
 
-  </div>
 
 
-                <div>
   {/* Bedrooms */}
 
 <div className="form-group">
@@ -1286,10 +1251,8 @@ function EditProperty() {
       </div>
     </label>
   </div>
-  </div>
   
 
-                <div>
     {/* propertyApproved */}
 
     <div className="form-group">
@@ -1340,22 +1303,22 @@ function EditProperty() {
     </label>
   </div>
 
-    {/* postedBy */}
-    <div className="form-group">
+  {/* Property Age */}
+  <div className="form-group">
     <label style={{ width: '100%'}}>
-    <label>postedBy</label>
+    <label>Property Age </label>
 
       <div style={{ display: "flex", alignItems: "center" }}>
         <div style={{ flex: "1" }}>
           <select
-            name="postedBy"
-            value={formData.postedBy || ""}
+            name="propertyAge"
+            value={formData.propertyAge || ""}
             onChange={handleFieldChange}
             className="form-control"
             style={{ display: "none" }} // Hide the default <select> dropdown
           >
-            <option value="">Select postedBy</option>
-            {dataList.postedBy?.map((option, index) => (
+            <option value="">Select Property Age</option>
+            {dataList.propertyAge?.map((option, index) => (
               <option key={index} value={option}>
                 {option}
               </option>
@@ -1365,7 +1328,7 @@ function EditProperty() {
           <button
             className="m-0"
             type="button"
-            onClick={() => toggleDropdown("postedBy")}
+            onClick={() => toggleDropdown("propertyAge")}
             style={{
               cursor: "pointer",
               border: "1px solid #2F747F",
@@ -1378,16 +1341,68 @@ function EditProperty() {
             }}
           >
             <span style={{ marginRight: "10px" }}>
-              {fieldIcons.postedBy || <FaHome />}
+              {fieldIcons.propertyAge || <FaHome />}
             </span>
-            {formData.postedBy || "Select postedBy"}
+            {formData.propertyAge || "Select Property Age"}
           </button>
 
-          {renderDropdown("postedBy")}
+          {renderDropdown("propertyAge")}
         </div>
       </div>
     </label>
   </div>
+
+  {/* Bank Loan */}
+
+  <div className="form-group">
+    <label style={{ width: '100%'}}>
+    <label>Bank Loan </label>
+
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ flex: "1" }}>
+          <select
+            name="bankLoan"
+            value={formData.bankLoan || ""}
+            onChange={handleFieldChange}
+            className="form-control"
+            style={{ display: "none" }} // Hide the default <select> dropdown
+          >
+            <option value="">Select Bank Loan</option>
+            {dataList.bankLoan?.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+
+          <button
+            className="m-0"
+            type="button"
+            onClick={() => toggleDropdown("bankLoan")}
+            style={{
+              cursor: "pointer",
+              border: "1px solid #2F747F",
+              padding: "10px",
+              background: "#fff",
+              borderRadius: "5px",
+              width: "100%",
+              textAlign: "left",
+              color: "#2F747F",
+            }}
+          >
+            <span style={{ marginRight: "10px" }}>
+              {fieldIcons.bankLoan || <FaHome />}
+            </span>
+            {formData.bankLoan || "Select Bank Loan"}
+          </button>
+
+          {renderDropdown("bankLoan")}
+        </div>
+      </div>
+    </label>
+  </div>
+
+  
     {/* facing */}
     <div className="form-group">
 
@@ -1533,16 +1548,61 @@ function EditProperty() {
       </div>
     </label>
   </div>
+
+  {/* postedBy */}
+  <div className="form-group">
+    <label style={{ width: '100%'}}>
+    <label>postedBy</label>
+
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ flex: "1" }}>
+          <select
+            name="postedBy"
+            value={formData.postedBy || ""}
+            onChange={handleFieldChange}
+            className="form-control"
+            style={{ display: "none" }} // Hide the default <select> dropdown
+          >
+            <option value="">Select postedBy</option>
+            {dataList.postedBy?.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+
+          <button
+            className="m-0"
+            type="button"
+            onClick={() => toggleDropdown("postedBy")}
+            style={{
+              cursor: "pointer",
+              border: "1px solid #2F747F",
+              padding: "10px",
+              background: "#fff",
+              borderRadius: "5px",
+              width: "100%",
+              textAlign: "left",
+              color: "#2F747F",
+            }}
+          >
+            <span style={{ marginRight: "10px" }}>
+              {fieldIcons.postedBy || <FaHome />}
+            </span>
+            {formData.postedBy || "Select postedBy"}
+          </button>
+
+          {renderDropdown("postedBy")}
+        </div>
+      </div>
+    </label>
   </div>
-
-
   {/* Description */}
   <div className="form-group">
     <label>Description:</label>
     <textarea name="description" onChange={handleFieldChange} className="form-control" placeholder="Enter Description"></textarea>
   </div>
 
-                <div>
   {/* furnished */}
   <div className="form-group">
     <label style={{width:"100%"}}>
@@ -1834,13 +1894,11 @@ function EditProperty() {
       </div>
     </label>
   </div>
-  </div>
 
 
   {/*   rentalPropertyAddress */}
-<div>
   <div className="form-group">
-<label>rental Property Address:</label>
+<label>Property Address:</label>
 
 <div className="input-card p-0 rounded-1" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', border: '1px solid #2F747F', background:"#fff"}}>
     <FaHome className="input-icon" 
@@ -1851,7 +1909,7 @@ function EditProperty() {
       value={formData.rentalPropertyAddress}
       onChange={handleFieldChange}
       className="form-input m-0"
-      placeholder="Rental Property Address"
+      placeholder=" Property Address"
       style={{ flex: '1 0 80%', padding: '8px', fontSize: '14px', border: 'none', outline: 'none' }}
     />
   </div>
@@ -2153,12 +2211,8 @@ function EditProperty() {
       </div>
     </label>
   </div>
-  </div>
 
 
-
-              {/* Step 3: Submit all data */}
-            
                 <Button
                   type="submit"
                   style={{ marginTop: '15px', backgroundColor: "rgb(47,116,127)", border:"none" }}
@@ -2173,6 +2227,7 @@ function EditProperty() {
 }
 
 export default EditProperty;
+
 
 
 

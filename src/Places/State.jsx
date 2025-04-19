@@ -5,12 +5,40 @@ import 'react-toastify/dist/ReactToastify.css';
 import './places.css';
 import { FaEdit, FaSearch } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const State = () => {
     const [states, setStates] = useState([]);
     const [stateName, setStateName] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [editingState, setEditingState] = useState(null);
+
+    const adminName = useSelector((state) => state.admin.name);
+  
+
+    // ✅ Record view on mount
+ useEffect(() => {
+   const recordDashboardView = async () => {
+     try {
+       await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+         userName: adminName,
+         viewedFile: "State",
+         viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+       });
+       console.log("Dashboard view recorded");
+     } catch (err) {
+       console.error("Failed to record dashboard view:", err);
+     }
+   };
+
+   if (adminName) {
+     recordDashboardView();
+   }
+ }, [adminName]);
+
 
     useEffect(() => {
         fetchStates();

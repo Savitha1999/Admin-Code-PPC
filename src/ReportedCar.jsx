@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function ReportedCar() {
-//   return (
-//     <div>ReportedCar</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

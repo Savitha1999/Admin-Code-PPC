@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function InsuranceLead() {
-//   return (
-//     <div>InsuranceLead</div>
-//   )
-// }
 
 
 import React from "react";

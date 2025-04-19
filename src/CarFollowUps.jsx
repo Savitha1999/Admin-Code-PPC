@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function CarFollowUps() {
-//   return (
-//     <div>CarFollowUps</div>
-//   )
-// }
-
 
 
 import React, { useState } from 'react';

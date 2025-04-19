@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function TucBanner() {
-//   return (
-//     <div>TucBanner</div>
-//   )
-// }
 
 
 

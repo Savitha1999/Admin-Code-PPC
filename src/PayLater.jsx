@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// export default function PayLater() {
-//   return (
-//     <div>PayLater</div>
-//   )
-// }
-
-
-
 
 
 import React, { useState } from "react";

@@ -46,16 +46,15 @@ const UserForm = ({ user, onSave, onDelete }) => {
             if (user) {
                 // If user exists, update it
                 await axios.patch(`${process.env.REACT_APP_API_URL}/admin-update/${user._id}`, formData);
-                toast.success('User updated successfully!');
+                alert('User updated successfully!');
             } else {
                 // If no user, create a new one
                 await axios.post(`${process.env.REACT_APP_API_URL}/admin-create`, formData);
-                toast.success('User created successfully!');
+                alert('User created successfully!');
             }
             onSave();
         } catch (err) {
-            console.error('Error:', err);
-            toast.error('An error occurred!');
+           
         }
     };
 
@@ -64,11 +63,11 @@ const UserForm = ({ user, onSave, onDelete }) => {
         try {
             if (user && window.confirm('Are you sure you want to delete this user?')) {
                 await axios.delete(`${process.env.REACT_APP_API_URL}/admin-delete/${user._id}`);
-                toast.success('User deleted successfully!');
+                alert('User deleted successfully!');
                 onDelete();
             }
         } catch (err) {
-            toast.error('An error occurred while deleting!');
+            alert('An error occurred while deleting!');
         }
     };
 

@@ -6,6 +6,8 @@ import axios from 'axios';
 import './AddPlan.css';
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const AddPlan = () => {
     const [plans, setPlans] = useState([]);
@@ -22,6 +24,32 @@ const AddPlan = () => {
         status: 'active',
     });
     const [editingPlanId, setEditingPlanId] = useState(null);
+
+    const adminName = useSelector((state) => state.admin.name);
+  
+
+    // ✅ Record view on mount
+ useEffect(() => {
+   const recordDashboardView = async () => {
+     try {
+       await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+         userName: adminName,
+         viewedFile: "AddPlan",
+         viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+       });
+       console.log("Dashboard view recorded");
+     } catch (err) {
+       console.error("Failed to record dashboard view:", err);
+     }
+   };
+
+   if (adminName) {
+     recordDashboardView();
+   }
+ }, [adminName]);
+
 
     useEffect(() => {
         fetchPlans();

@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function CustomerCar() {
-//   return (
-//     <div>CustomerCar</div>
-//   )
-// }
-
 
 
 import React, { useState } from 'react';

@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// export default function PaidCar() {
-//   return (
-//     <div>PaidCar</div>
-//   )
-// }
-
-
 
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';

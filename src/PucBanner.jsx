@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function PucBanner() {
-//   return (
-//     <div>PucBanner</div>
-//   )
-// }
 
 
 import React, { useState } from 'react';

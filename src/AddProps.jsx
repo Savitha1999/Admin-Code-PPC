@@ -35,6 +35,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { IoCloseCircle } from "react-icons/io5";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 
 function AddProperty() {
@@ -121,6 +122,32 @@ function AddProperty() {
  
   const { phoneNumber } = useParams();
 
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Add Property",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
+
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get("ppcId");
@@ -174,41 +201,7 @@ const formattedCreatedAt = Date.now
       previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
-  // const handlePreview = () => { 
-  //   const requiredFields = [
-      
-  //     "propertyMode",
-  //     "propertyType",
-  //     "price",
-  //     "totalArea",
-  //     "areaUnit",
-  //     "salesType",
-  //     "postedBy"
-  //   ];
-  
-  //   const missingFields = requiredFields.filter(field => !formData[field]);
-  
-  //   if (missingFields.length > 0) {
-  //     alert(`Please fill in the following fields before previewing: ${missingFields.join(", ")}`);
-  //     return;
-  //   }
-  
-  //   setStep("preview");
-  //   const isValid = requiredFields.every(field => formData[field]);
-  
-  //   if (!isValid) {
-  //     alert("Please fill in all required fields.");
-  //     return;
-  //   }
-  
-  //   setIsPreviewOpen(true); // Open the preview
-  
-  //   // Scroll to the preview section
-  //   setTimeout(() => {
-  //     previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  //   }, 100);
-  // };
-
+ 
   const propertyDetailsList = [
     { heading: true, label: "Basic Property Info" }, // Heading 1
     { icon: <MdHomeWork />, label: "Property Mode", value:  formData.propertyMode},

@@ -2,24 +2,25 @@
 
 
 
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ppclogo from './Assets/ppclogo.png';
+import { useSelector } from 'react-redux';
 
 const ProfileManager = () => {
   const [formData, setFormData] = useState({
-    pucNumber: "",
-    name: "",
     password: "",
     email: "",
   });
   const [profileImage, setProfileImage] = useState(null);
   const [profiles, setProfiles] = useState([]);
-  const [editId, setEditId] = useState(null); // Used to track update mode
+  const [editId, setEditId] = useState(null);
+  const adminName = useSelector((state) => state.admin.name); // Redux: admin name
 
-  // Handle input change
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -28,7 +29,6 @@ const ProfileManager = () => {
     setProfileImage(e.target.files[0]);
   };
 
-  // Fetch profiles
   const fetchProfiles = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/all-get-puc-profiles`);
@@ -38,16 +38,10 @@ const ProfileManager = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
-
-  // Save or Update
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("pucNumber", formData.pucNumber);
-    data.append("name", formData.name);
+    data.append("name", adminName); // Used for createdBy
     data.append("password", formData.password);
     data.append("email", formData.email);
     if (profileImage) {
@@ -67,8 +61,7 @@ const ProfileManager = () => {
         alert("Profile created successfully!");
       }
 
-      // Reset form
-      setFormData({ pucNumber: "", name: "", password: "", email: "" });
+      setFormData({ password: "", email: "" });
       setProfileImage(null);
       setEditId(null);
       fetchProfiles();
@@ -78,7 +71,6 @@ const ProfileManager = () => {
     }
   };
 
-  // Delete profile
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this profile?")) return;
     try {
@@ -91,45 +83,29 @@ const ProfileManager = () => {
     }
   };
 
-  // Edit profile (load into form)
   const handleEdit = (profile) => {
     setFormData({
-      pucNumber: profile.pucNumber,
-      name: profile.name,
       password: profile.password,
       email: profile.email,
     });
-    setProfileImage(null); // user can re-upload or leave as-is
+    setProfileImage(null);
     setEditId(profile._id);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // optional
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "20px" }}>
-      <h2 style={{ textAlign: "center" }}>{editId ? "Update Profile" : "Create Profile"}</h2>
+      <div style={{ textAlign: "center", marginBottom: "10px" }}>
+        <h2>{editId ? "Update Profile" : "Create Profile"}</h2>
+        <div>Welcome to your Dashboard, <strong>{adminName}</strong>!</div>
+      </div>
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label>PUC Number:</label>
-        <input
-          type="text"
-          name="pucNumber"
-          value={formData.pucNumber}
-          onChange={handleChange}
-          className="form-control"
-        />
-
-        <br />
         <label>Profile Image:</label>
         <input type="file" onChange={handleFileChange} className="form-control" />
 
         <br />
-        <label>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="form-control"
-        />
+        <label>Admin (Created By):</label>
+        <input type="text" value={adminName} className="form-control" readOnly />
 
         <br />
         <label>Password:</label>
@@ -152,77 +128,51 @@ const ProfileManager = () => {
         />
 
         <br />
-        <button type="submit" className="btn btn-success">
-          {editId ? "Update" : "Save"}
+        <button type="submit" className="btn btn-primary">
+          {editId ? "Update Profile" : "Create Profile"}
         </button>
-        {editId && (
-          <button
-            type="button"
-            className="btn btn-secondary ml-2"
-            onClick={() => {
-              setEditId(null);
-              setFormData({ pucNumber: "", name: "", password: "", email: "" });
-              setProfileImage(null);
-            }}
-          >
-            Cancel
-          </button>
-        )}
       </form>
 
       <hr />
 
-      <h3>All Profiles (With PUC Number)</h3>
-      <table className="table table-bordered table-striped">
+      <h3 style={{ marginTop: "40px" }}>All Profiles</h3>
+      <table className="table table-striped">
         <thead>
           <tr>
-            <th>#</th>
-            <th>PUC</th>
-            <th>Image</th>
-            <th>Name</th>
+            <th>PUC Number</th>
+            <th>Created By</th>
             <th>Email</th>
-            <th>Password</th>
+            <th>Profile Image</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {profiles.map((profile, index) => (
+          {profiles.map((profile) => (
             <tr key={profile._id}>
-              <td>{index + 1}</td>
               <td>{profile.pucNumber}</td>
-              <td>
-  <img
-    src={
-      profile.profileImage
-        ? `http://localhost:5006/${profile.profileImage}`
-        : ppclogo
-    }
-    alt="profile"
-    style={{ width: 50, height: 50, objectFit: "cover" }}
-  />
-</td>
-
-            
               <td>{profile.name}</td>
               <td>{profile.email}</td>
-              <td>{profile.password}</td>
               <td>
-                <button className="btn btn-warning btn-sm mr-2" onClick={() => handleEdit(profile)}>
-                  Update
-                </button>
+                {profile.profileImage && (
+                  <img
+                    src={profile.profileImage}
+                    alt="Profile"
+                    width="50"
+                    height="50"
+                    style={{ objectFit: "cover" }}
+                  />
+                )}
+              </td>
+              <td>
+                <button className="btn btn-warning btn-sm" onClick={() => handleEdit(profile)}>
+                  Edit
+                </button>{" "}
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(profile._id)}>
                   Delete
                 </button>
               </td>
             </tr>
           ))}
-          {profiles.length === 0 && (
-            <tr>
-              <td colSpan="7" className="text-center">
-                No profiles with PUC Number found.
-              </td>
-            </tr>
-          )}
         </tbody>
       </table>
     </div>

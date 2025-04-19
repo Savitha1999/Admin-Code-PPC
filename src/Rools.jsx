@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function Rools() {
-//   return (
-//     <div>Rools</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

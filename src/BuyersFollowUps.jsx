@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function BuyersFollowUps() {
-//   return (
-//     <div>BuyersFollowUps</div>
-//   )
-// }
-
 
 
 

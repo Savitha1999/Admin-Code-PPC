@@ -13,6 +13,7 @@ export default function Formtable() {
     const setMultipleValue = (value) => {
         setMul(value);
     };
+    
     const multipletable = (e) => {
         e.preventDefault();
         let startVal = parseInt(start);

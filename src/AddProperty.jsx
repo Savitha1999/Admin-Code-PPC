@@ -4,7 +4,6 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "react-bootstrap";
@@ -19,6 +18,8 @@ import { GiKitchenScale, GiMoneyStack , GiResize , GiGears} from "react-icons/gi
 import { HiUserGroup } from "react-icons/hi";
 import { BiBuildingHouse , BiWorld} from "react-icons/bi";
 import { IoCloseCircle } from "react-icons/io5";
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 function AddProperty() {
   const location = useLocation();
@@ -77,6 +78,30 @@ function AddProperty() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [video, setVideo] = useState(null);
 
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Add Property",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
 
   const [dropdownState, setDropdownState] = useState({
     activeDropdown: null,
@@ -346,7 +371,53 @@ const fieldIcons = {
   carParking: <FaCar color="#2F747F" />,
 };
 
-    
+const fieldLabels = {
+  propertyMode: "Property Mode",
+  propertyType: "Property Type",
+  price: "Price",
+  propertyAge: "Property Age",
+  bankLoan: "Bank Loan",
+  negotiation: "Negotiation",
+  length: "Length",
+  breadth: "Breadth",
+  totalArea: "Total Area",
+  ownership: "Ownership",
+  bedrooms: "Bedrooms",
+  kitchen: "Kitchen",
+  kitchenType: "Kitchen Type",
+  balconies: "Balconies",
+  floorNo: "Floor No.",
+  areaUnit: "Area Unit",
+  propertyApproved: "Property Approved",
+  postedBy: "Posted By",
+  facing: "Facing",
+  salesMode: "Sales Mode",
+  salesType: "Sales Type",
+  description: "Description",
+  furnished: "Furnished",
+  lift: "Lift",
+  attachedBathrooms: "Attached Bathrooms",
+  western: "Western Toilet",
+  numberOfFloors: "Number of Floors",
+  carParking: "Car Parking",
+  rentalPropertyAddress: "Property Address",
+  country: "Country",
+  state: "State",
+  city: "City",
+  district: "District",
+  area: "Area",
+  streetName: "Street Name",
+  doorNumber: "Door Number",
+  nagar: "Nagar",
+  ownerName: "Owner Name",
+  email: "Email",
+  phoneNumber: "Phone Number",
+  phoneNumberCountryCode: "Phone Country Code",
+  alternatePhone: "Alternate Phone",
+  alternatePhoneCountryCode: "Alternate Phone Country Code",
+  bestTimeToCall: "Best Time to Call",
+};
+
     const renderDropdown = (field) => {
       const options = dataList[field] || [];
       const filteredOptions = options.filter((option) =>
@@ -374,6 +445,17 @@ const fieldIcons = {
               animation: 'popupOpen 0.3s ease-in-out',
             }}
           >
+                        <div
+          style={{
+            fontWeight: "bold",
+            fontSize: "16px",
+            marginBottom: "10px",
+            textAlign: "start",
+            color: "#019988",
+          }}
+        >
+           {fieldLabels[field] || "Property Field"}
+        </div>
             <div
               style={{
                 display: 'flex',
@@ -458,24 +540,24 @@ const fields = [
   { name: "propertyMode", type: "select" },
   { name: "propertyType", type: "select" },
   { name: "price", type: "input" },
-  { name: "propertyAge", type: "select" },
-  { name: "bankLoan", type: "select" },
   { name: "negotiation", type: "select" },
   { name: "length", type: "input" },
   { name: "breadth", type: "input" },
   { name: "totalArea", type: "input" },
+  { name: "areaUnit", type: "select" },
   { name: "ownership", type: "select" },
   { name: "bedrooms", type: "select" },
   { name: "kitchen", type: "select" },
   { name: "kitchenType", type: "select" },
   { name: "balconies", type: "select" },
   { name: "floorNo", type: "select" },
-  { name: "areaUnit", type: "select" },
   { name: "propertyApproved", type: "select" },
-  { name: "postedBy", type: "select" },
+  { name: "propertyAge", type: "select" },
+  { name: "bankLoan", type: "select" },
   { name: "facing", type: "select" },
   { name: "salesMode", type: "select" },
   { name: "salesType", type: "select" },
+  { name: "postedBy", type: "select" },
   { name: "description", type: "input" },
   { name: "furnished", type: "select" },
   { name: "lift", type: "select" },
@@ -799,8 +881,6 @@ const fields = [
   </div>
 ))}
  
-
-
         <button type="submit" style={{background:"#2F747F", color:"#fff"}}>
           Save Property
         </button>
@@ -811,11 +891,5 @@ const fields = [
 }
 
 export default AddProperty;
-
-
-
-
-
-
 
 

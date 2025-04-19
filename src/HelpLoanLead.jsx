@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function HelpLoanLead() {
-//   return (
-//     <div>HelpLoanLead</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

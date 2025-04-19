@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function PucNumber() {
-//   return (
-//     <div>PucNumber</div>
-//   )
-// }
-
 
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';

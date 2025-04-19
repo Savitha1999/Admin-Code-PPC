@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function BusinessSupport() {
-//   return (
-//     <div>BusinessSupport</div>
-//   )
-// }
 
 
 import React, { useState } from 'react';

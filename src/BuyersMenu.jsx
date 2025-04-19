@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function BuyersMenu() {
-//   return (
-//     <div>BuyersMenu</div>
-//   )
-// }
-
 
 import React, { useState } from 'react';
 

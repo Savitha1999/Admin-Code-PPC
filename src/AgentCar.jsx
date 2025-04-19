@@ -1,10 +1,39 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const AgentCar = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
+
+  
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Agent Property",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
 
   const data = [
     { postedFrom: 'PUC', mobile: '9943494299', postedBy: 'Agent - Amirthalingam', cars: 3 },

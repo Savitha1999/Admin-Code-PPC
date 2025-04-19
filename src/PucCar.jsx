@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function PucCar() {
-//   return (
-//     <div>PucCar</div>
-//   )
-// }
-
 
 
 import React, { useState } from 'react';

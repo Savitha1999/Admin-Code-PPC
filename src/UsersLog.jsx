@@ -1,10 +1,4 @@
-// import React from 'react'
 
-// export default function UsersLog() {
-//   return (
-//     <div>UsersLog</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function CarStatics() {
-//   return (
-//     <div>CarStatics</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

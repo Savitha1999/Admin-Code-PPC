@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function PaidBills() {
-//   return (
-//     <div>PaidBills</div>
-//   )
-// }
 
 
 

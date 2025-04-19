@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// export default function Limits() {
-//   return (
-//     <div>Limits</div>
-//   )
-// }
-
-
 
 
 import React from "react";

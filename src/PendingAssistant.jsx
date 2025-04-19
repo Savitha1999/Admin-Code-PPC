@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function PendingAssistant() {
-//   return (
-//     <div>PendingAssistant</div>
-//   )
-// }
-
 
 import React, { useState } from "react";
 

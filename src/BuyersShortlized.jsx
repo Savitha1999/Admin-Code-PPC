@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// export default function BuyersShortlized() {
-//   return (
-//     <div>BuyersShortlized</div>
-//   )
-// }
-
-
 
 import React, { useState } from "react";
 

@@ -7,9 +7,39 @@
 // }
 
 
-import React, { useState } from 'react';
+import axios from 'axios';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const PaginationTable = () => {
+
+
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Assistant Accounts",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
+
   // Sample data (replace with your actual data)
   const data = Array.from({ length: 50 }, (_, index) => ({
     id: index + 1,

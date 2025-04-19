@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function ExpireCar() {
-//   return (
-//     <div>ExpireCar</div>
-//   )
-// }
 
 
 import React, { useState } from 'react';

@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function TRansferFollowUps() {
-//   return (
-//     <div>TRansferFollowUps</div>
-//   )
-// }
-
 
 import React, { useState } from 'react';
 

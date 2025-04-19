@@ -16,6 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Officelist.css';
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const OfficeForm = ({ office, onSave }) => {
   const [formData, setFormData] = useState({
@@ -24,6 +26,31 @@ const OfficeForm = ({ office, onSave }) => {
     address: '',
     mobile: '',
   });
+   const adminName = useSelector((state) => state.admin.name);
+  
+
+     // ✅ Record view on mount
+  useEffect(() => {
+    const recordDashboardView = async () => {
+      try {
+        await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+          userName: adminName,
+          viewedFile: "Office",
+          viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+        });
+        console.log("Dashboard view recorded");
+      } catch (err) {
+        console.error("Failed to record dashboard view:", err);
+      }
+    };
+
+    if (adminName) {
+      recordDashboardView();
+    }
+  }, [adminName]);
+
 
   useEffect(() => {
     if (office) {

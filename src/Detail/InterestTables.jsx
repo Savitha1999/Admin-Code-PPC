@@ -7,6 +7,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MdDeleteForever } from 'react-icons/md';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
+
 
 const InterestTables = () => {
     const [interestRequestsData, setInterestRequestsData] = useState([]);
@@ -15,6 +18,28 @@ const InterestTables = () => {
     const [search, setSearch] = useState("");
     const [fromDate, setFromDate] = useState("");
     const [endDate, setEndDate] = useState("");
+
+    const adminName = useSelector((state) => state.admin.name);
+
+    // ✅ Record view on mount
+    useEffect(() => {
+        const recordDashboardView = async () => {
+            try {
+                await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+                    userName: adminName,
+                    viewedFile: "Interest Table",
+                    viewTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+                });
+                console.log("Dashboard view recorded");
+            } catch (err) {
+                console.error("Failed to record dashboard view:", err);
+            }
+        };
+
+        if (adminName) {
+            recordDashboardView();
+        }
+    }, [adminName]);
 
     // Fetch all interest data for owner and buyer
     const fetchAllInterestData = async () => {
@@ -78,70 +103,72 @@ const InterestTables = () => {
         fetchAllInterestData();
     }, []);
 
+    // Combine both owner and buyer data into a single array
+    const combinedData = [
+        ...interestRequestsData.map(data => ({ ...data, type: 'Owner' }))
+    ];
+
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Search Interest Requests</h2>
-           
 
-<form 
-    onSubmit={(e) => e.preventDefault()} 
-    style={{
-        width: "80%",
-        margin: "0 auto", // Centers the form horizontally
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        backgroundColor: "#fff",
-        marginBottom:"20px"
-    }}
->
-    <div className="mb-3">
-        <label htmlFor="searchInput" className="form-label fw-bold">Search PPC ID</label>
-        <input
-            type="text"
-            id="searchInput"
-            className="form-control"
-            placeholder="Enter PPC ID"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
-        />
-    </div>
+            <form 
+                onSubmit={(e) => e.preventDefault()} 
+                style={{
+                    width: "80%",
+                    margin: "0 auto",
+                    padding: "20px",
+                    border: "1px solid #ccc",
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#fff",
+                    marginBottom:"20px"
+                }}
+            >
+                <div className="mb-3">
+                    <label htmlFor="searchInput" className="form-label fw-bold">Search PPC ID</label>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        className="form-control"
+                        placeholder="Enter PPC ID"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
+                    />
+                </div>
 
-    <div className="mb-3">
-        <label htmlFor="fromDate" className="form-label fw-bold">From Date</label>
-        <input
-            type="date"
-            id="fromDate"
-            className="form-control"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
-        />
-    </div>
+                <div className="mb-3">
+                    <label htmlFor="fromDate" className="form-label fw-bold">From Date</label>
+                    <input
+                        type="date"
+                        id="fromDate"
+                        className="form-control"
+                        value={fromDate}
+                        onChange={(e) => setFromDate(e.target.value)}
+                        style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
+                    />
+                </div>
 
-    <div className="mb-3">
-        <label htmlFor="endDate" className="form-label fw-bold">End Date</label>
-        <input
-            type="date"
-            id="endDate"
-            className="form-control"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
-        />
-    </div>
-</form>
-
+                <div className="mb-3">
+                    <label htmlFor="endDate" className="form-label fw-bold">End Date</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        className="form-control"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        style={{ width: "100%", padding: "10px", borderRadius: "5px" }}
+                    />
+                </div>
+            </form>
 
             {loading ? (
                 <p>Loading data...</p>
             ) : (
                 <>
-                    {/* Interest Owner Data */}
-                    <h3 className='text-success pb-3 mt-5' >Interest Owner Data</h3>
-                    {filterData(interestRequestsData).length > 0 ? (
+                    <h3 className='text-primary pb-3 mt-5'>Combined Interest Data</h3>
+                    {filterData(combinedData).length > 0 ? (
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -160,7 +187,7 @@ const InterestTables = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filterData(interestRequestsData).map((data, index) => (
+                                {filterData(combinedData).map((data, index) => (
                                     <tr key={index}>
                                         <td>{data.ppcId}</td>
                                         <td>{data.postedUserPhoneNumber}</td>
@@ -174,11 +201,8 @@ const InterestTables = () => {
                                         <td>{data.createdAt ? new Date(data.createdAt).toLocaleString() : 'N/A'}</td>
                                         <td>{data.updatedAt ? new Date(data.updatedAt).toLocaleString() : 'N/A'}</td>
                                         <td>
-                                            {/* <button className="btn btn-danger" onClick={() => handleDelete(data.ppcId)}>
-                                                <MdDeleteForever size={24} />
-                                            </button> */}
                                             <button className="delete-btn" onClick={() => handleDelete(data.ppcId)}>
-                                                    <MdDeleteForever style={{fontSize:"30px",color:"rgb(230, 17, 17)"}} />
+                                                <MdDeleteForever style={{fontSize:"30px",color:"rgb(230, 17, 17)"}} />
                                             </button>
                                         </td>
                                     </tr>
@@ -186,46 +210,7 @@ const InterestTables = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <p>No interest owner data found.</p>
-                    )}
-
-                    {/* Interest Buyer Data */}
-                    <h3 className='text-warning mt-5 mb-3'>Interest Buyer Data</h3>
-                    {filterData(propertiesData).length > 0 ? (
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>PPC ID</th>
-                                    <th>Posted User Phone Number</th>
-                                    {/* <th>Property Details</th> */}
-                                    <th>Interested User Phone Numbers</th>
-                                    <th>Views</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filterData(propertiesData).map((property, index) => (
-                                    <tr key={index}>
-                                        <td>{property.ppcId}</td>
-                                        <td>{property.postedUserPhoneNumber}</td>
-                                        {/* <td>{property.propertyDetails || 'No details available'}</td> */}
-                                        <td>{(property.interestedUsers || []).join(', ')}</td>
-                                        <td>{property.views || 0}</td>
-                                        <td>{property.createdAt ? new Date(property.createdAt).toLocaleString() : 'N/A'}</td>
-                                        <td>{property.updatedAt ? new Date(property.updatedAt).toLocaleString() : 'N/A'}</td>
-                                        <td>
-                                        <button className="delete-btn" onClick={() => handleDelete(property.ppcId)}>
-                                                    <MdDeleteForever style={{fontSize:"30px",color:"rgb(230, 17, 17)"}} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No interest buyer data found.</p>
+                        <p>No interest data found.</p>
                     )}
                 </>
             )}
@@ -234,3 +219,15 @@ const InterestTables = () => {
 };
 
 export default InterestTables;
+
+
+
+
+
+
+
+
+
+
+
+

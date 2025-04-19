@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// export default function PreApprovedCar() {
-//   return (
-//     <div>PreApprovedCar</div>
-//   )
-// }
-
-
 
 
 import React, { useState } from 'react';

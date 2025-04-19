@@ -6,6 +6,8 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 function AdminForm() {
   const [formData, setFormData] = useState({
@@ -35,6 +37,32 @@ function AdminForm() {
     bestTimeToCall: "",
     alternatePhone: "",
   });
+
+  
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Admin Form ",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
 
   const [dataList, setDataList] = useState([]); // Data list for the active field
   const [activeField, setActiveField] = useState("propertyMode"); // Default active field

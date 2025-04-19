@@ -891,39 +891,3 @@ const PropertyForm = () => {
 
 export default PropertyForm;
 
-
-
-// import React from 'react';
-
-// const ResponsiveForm = () => {
-//   return (
-//     <div className="container-fluid">
-//       <div className="row">
-//         {/* Form Section */}
-//         <div className="col-md-7 col-12">
-//           <form>
-//             <h2>Form Title</h2>
-//             <div className="mb-3">
-//               <label htmlFor="name" className="form-label">Name</label>
-//               <input type="text" className="form-control" id="name" placeholder="Enter name" />
-//             </div>
-//             <div className="mb-3">
-//               <label htmlFor="email" className="form-label">Email</label>
-//               <input type="email" className="form-control" id="email" placeholder="Enter email" />
-//             </div>
-//             <div className="mb-3">
-//               <label htmlFor="message" className="form-label">Message</label>
-//               <textarea className="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
-//             </div>
-//             <button type="submit" className="btn btn-primary">Submit</button>
-//           </form>
-//         </div>
-
-//         {/* Empty Div with Black Background */}
-//         <div className="col-md-5 d-none d-md-block" style={{ backgroundColor: 'black', height: '100vh' }}></div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ResponsiveForm;

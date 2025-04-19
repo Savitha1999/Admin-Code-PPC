@@ -10,6 +10,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MdDeleteForever } from 'react-icons/md';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const ContactTables = () => {
     const [contactRequestsData, setContactRequestsData] = useState([]);
@@ -20,6 +22,32 @@ const ContactTables = () => {
     const [search, setSearch] = useState("");
     const [fromDate, setFromDate] = useState("");
     const [endDate, setEndDate] = useState("");
+
+    const adminName = useSelector((state) => state.admin.name);
+  
+
+    // ✅ Record view on mount
+ useEffect(() => {
+   const recordDashboardView = async () => {
+     try {
+       await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+         userName: adminName,
+         viewedFile: "Contact Table",
+         viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+       });
+       console.log("Dashboard view recorded");
+     } catch (err) {
+       console.error("Failed to record dashboard view:", err);
+     }
+   };
+
+   if (adminName) {
+     recordDashboardView();
+   }
+ }, [adminName]);
+
 
     // Fetch all contact request data for owners and buyers
     const fetchAllContactData = async () => {
@@ -185,46 +213,7 @@ const ContactTables = () => {
                         <p>No contact request owner data found.</p>
                     )}
 
-                    {/* Contact Request Buyer Data */}
-                    <h3 className='text-warning mt-5 mb-3'>Contact Request Buyer Data</h3>
-                    {filterData(propertiesData).length > 0 ? (
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>PPC ID</th>
-                                    <th>Posted User Phone Number</th>
-                                    <th>Contact Requesters Phone Numbers</th>
-                                    <th>Best Time to Call</th>
-                                    <th>Email</th>
-                                    <th>Views</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filterData(propertiesData).map((property, index) => (
-                                    <tr key={index}>
-                                        <td>{property.ppcId}</td>
-                                        <td>{property.postedUserPhoneNumber}</td>
-                                        <td>{(property.contactRequesters || []).join(', ')}</td>
-                                        <td>{property.bestTimeToCall || 'N/A'}</td>
-                                        <td>{property.email || 'N/A'}</td>
-                                        <td>{property.views || 0}</td>
-                                        <td>{property.createdAt ? new Date(property.createdAt).toLocaleString() : 'N/A'}</td>
-                                        <td>{property.updatedAt ? new Date(property.updatedAt).toLocaleString() : 'N/A'}</td>
-                                        <td>
-                                            <button className="btn btn-danger" onClick={() => handleDelete(property.ppcId)}>
-                                                <MdDeleteForever size={24} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No contact request buyer data found.</p>
-                    )}
+                  
                 </>
             )}
         </div>

@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function BuyerListInterest() {
-//   return (
-//     <div>BuyerListInterest</div>
-//   )
-// }
-
 
 
 import React, { useState } from "react";

@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function SearchedData() {
-//   return (
-//     <div>SearchedData</div>
-//   )
-// }
-
 
 
 import React, { useState } from "react";

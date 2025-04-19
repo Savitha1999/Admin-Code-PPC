@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function NewCarLead() {
-//   return (
-//     <div>NewCarLead</div>
-//   )
-// }
 
 import React from "react";
 

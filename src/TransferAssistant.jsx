@@ -1,11 +1,3 @@
-// import React from 'react'
-
-// export default function TransferAssistant() {
-//   return (
-//     <div>TransferAssistant</div>
-//   )
-// }
-
 
 import React, { useState } from 'react';
 

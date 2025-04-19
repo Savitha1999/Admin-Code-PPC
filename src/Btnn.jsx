@@ -1,42 +1,11 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Button, Form, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import Footer from '../footer/Footer';
-// import Topbar from '../Navbar/Topbar';
-// import './card.css';
+
 
 const StudentCard = ({ student }) => (
   <Container fluid className=" p-3">
-    {/* <Card style={{ boxShadow: '7px 5px 21px -9px rgba(0,0,0,0.6)' }}>
-      <Card.Img
-        variant="left"
-        src={student.photo}
-        style={{ width: '80px', height: '80px', margin: '15px' }}
-      />
-      <Card.Body className=" d-flex flex-column">
-        <Card.Title>{student.name}</Card.Title>
-        <Card.Text className="d-flex flex-wrap">
-          <Row>
-            <Col md={4}>
-              <strong>Email:</strong> {student.email}<br />
-              <strong>Phone:</strong> {student.phone}<br />
-              <strong>Location:</strong> {student.location}<br />
-            </Col>
-            <Col md={4}>
-              <strong>Education:</strong> {student.education}<br />
-              <strong>Passout:</strong> {student.passout}<br />
-              <strong>Course Details:</strong> {student.courseDetail}<br />
-            </Col>
-            <Col md={4}>
-              <strong>Experience:</strong> {student.experience}<br />
-              <strong>Position:</strong> {student.position}<br />
-              <strong>Portfolio:</strong> <a href={student.portfolio} target="_blank" rel="noopener noreferrer">View Portfolio</a><br />
-            </Col>
-          </Row>
-        </Card.Text>
-      </Card.Body>
-        <Button variant="primary">Download</Button>
-    </Card> */}
+   
      <Card className="mb-3">
       <Row className="g-0">
         <Col md={2}>

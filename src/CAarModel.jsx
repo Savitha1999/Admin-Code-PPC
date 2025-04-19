@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function CAarModel() {
-//   return (
-//     <div>CAarModel</div>
-//   )
-// }
 
 
 import React, { useState } from "react";

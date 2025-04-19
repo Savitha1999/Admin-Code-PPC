@@ -6,74 +6,142 @@ import { Helmet } from "react-helmet";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 const AddPropertyList = () => {
   const [properties, setProperties] = useState([]);
   const [statusProperties, setStatusProperties] = useState({});
   const [previousStatuses, setPreviousStatuses] = useState({}); // Store previous statuses before delete
   const navigate = useNavigate();
-  // const [properties, setProperties] = useState([]);
 
-  const [excelFile, setExcelFile] = useState(null);
+//   const [message,setMessage]=useState('');
 
-const handleExcelChange = (e) => {
-  setExcelFile(e.target.files[0]);
-};
+//   const [excelFile, setExcelFile] = useState(null);
 
-const handleExcelUpload = async () => {
-  if (!excelFile) {
-    alert("Please select an Excel file to upload.");
-    return;
-  }
+// const handleExcelChange = (e) => {
+//   setExcelFile(e.target.files[0]);
+// };
 
-  const formData = new FormData();
-  formData.append("excelFile", excelFile);
+// const handleExcelUpload = async () => {
+//   if (!excelFile) {
+//     alert("Please select an Excel file to upload.");
+//     return;
+//   }
 
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/update-property-upload`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+//   const formData = new FormData();
+//   formData.append("excelFile", excelFile);
 
-    alert(response.data.message);
-    fetchProperties(); // Refresh the property list
-  } catch (error) {
-    console.error("Error uploading Excel file:", error);
-    alert(error.response?.data?.message || "Excel upload failed.");
-  }
-};
+//   try {
+//     const response = await axios.post(
+//       `${process.env.REACT_APP_API_URL}/update-property-upload`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
 
+//     alert(response.data.message);
+//     fetchProperties(); // Refresh the property list
+//   } catch (error) {
+//     console.error("Error uploading Excel file:", error);
+//     alert(error.response?.data?.message || "Excel upload failed.");
+//   }
+// };
+
+const [excelFile, setExcelFile] = useState(null);
+  const [message, setMessage] = useState('');
+
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Manage Property",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
+
+
+  // Handle Excel file selection
+  const handleExcelChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+
+  // Handle Excel file upload
+  const handleExcelUpload = async () => {
+    if (!excelFile) {
+      setMessage('Please select an Excel file to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('excelFile', excelFile);
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/update-property-upload`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      setMessage(response.data.message);  // Display success message
+      // Optionally, fetch updated property data here
+      // fetchProperties(); // You could add a function to refresh properties after upload
+    } catch (error) {
+      console.error('Error uploading Excel file:', error);
+      setMessage(error.response?.data?.message || 'Excel upload failed.');
+    }
+  };
 
 
   useEffect(() => {
     fetchProperties();
   }, []);
 
+
+
   const fetchProperties = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/fetch-all-datas`);
-      console.log("Fetched properties:", response.data.users); // Debugging log
   
+      console.log("Fetched properties:", response.data.users);
       setProperties(response.data.users);
   
+      // Set statuses
       const initialStatuses = response.data.users.reduce((acc, property) => {
-        console.log(`Property: ${property.ppcId}, Status: ${property.status}`); // Debug log
-        acc[property.ppcId] = property.status || "incomplete"; // Ensure a default status is set
+        acc[property.ppcId] = property.status || "incomplete";
         return acc;
       }, {});
-  
+      
       setStatusProperties(initialStatuses);
       localStorage.setItem("statusProperties", JSON.stringify(initialStatuses));
     } catch (error) {
       console.error("Error fetching properties:", error);
     }
   };
-
+  
 
 
   const handleFeatureStatusChange = async (ppcId, currentStatus) => {
@@ -94,6 +162,31 @@ const handleExcelUpload = async () => {
     }
   };
 
+ 
+  const handleDeleteAll = async () => {
+    if (window.confirm('Are you sure you want to delete all properties?')) {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/delete-all-properties`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const data = await response.json();
+        if (response.ok) {
+          setMessage(data.message); // optional: show a success message
+          console.log('Deleted Count:', data.deletedCount);
+          // Optionally refresh property list here
+        } else {
+          setMessage(data.message || 'Failed to delete properties.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setMessage('Server error while deleting properties.');
+      }
+    }
+  };
   
   
 
@@ -215,20 +308,32 @@ const handleExcelUpload = async () => {
     }
   };
 
-  const handlePermanentDelete = async (phoneNumber, ppcId) => {
+
+
+
+  
+  const handlePermanentDelete = async (ppcId) => {
     const confirmDelete = window.confirm("Are you sure you want to permanently delete this record?");
     if (!confirmDelete) return;
   
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/delete-data`, {
-        params: { phoneNumber, ppcId },
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/delete-ppcId-data`, {
+        params: { ppcId },
       });
   
       if (response.status === 200) {
-        alert("User deleted successfully!");
+        alert("User Permenent deleted successfully!");
+  
+        // Remove from UI list
         setProperties((prevProperties) =>
           prevProperties.filter((property) => property.ppcId !== ppcId)
         );
+  
+        // Also update localStorage if status is stored
+        const updatedStatus = { ...statusProperties };
+        delete updatedStatus[ppcId];
+        setStatusProperties(updatedStatus);
+        localStorage.setItem("statusProperties", JSON.stringify(updatedStatus));
       } else {
         alert(response.data.message || "Failed to delete user.");
       }
@@ -255,16 +360,15 @@ const handleExcelUpload = async () => {
     />
   </Col> */}
 
-
-  <div className="col-md-6">
-<label className="form-label">Upload Excel File:</label>
+<div className="col-md-6">
+  <label className="form-label">Upload Excel File:</label>
 
   <div
     style={{
       display: "flex",
       alignItems: "center",
       gap: "10px",
-      border: "2px dashedr gba(10, 90, 129, 0.72)",
+      border: "2px dashed rgba(10, 90, 129, 0.72)",
       padding: "15px",
       borderRadius: "10px",
       backgroundColor: "#CCFFFF",
@@ -273,37 +377,48 @@ const handleExcelUpload = async () => {
       flexDirection: "column",
       textAlign: "center",
     }}
-    onClick={() => document.getElementById("excelFile").click()}
+    onClick={() => document.getElementById("excelFile").click()}  // Triggers file input
+    aria-label="Click to upload Excel file"
   >
-    <i className="bi bi-file-earmark-arrow-up" style={{ fontSize: "2rem", color: "#007bff" }}></i>
-    <span style={{ fontSize: "1rem", color: "#333"}}>Click to upload Excel file</span>
+    <i
+      className="bi bi-file-earmark-arrow-up"
+      style={{ fontSize: "2rem", color: "#007bff" }}
+    ></i>
+    <span style={{ fontSize: "1rem", color: "#333" }}>Click to upload Excel file</span>
+    
+    {/* Hidden file input */}
     <input
       type="file"
       id="excelFile"
       accept=".xlsx, .xls"
-      onChange={handleExcelChange}
-      style={{ display: "none" }}
+      onChange={handleExcelChange}  // Handle file change
+      style={{ display: "none" }}  // Hide the default file input
     />
   </div>
 </div>
 
-
-
+{/* Upload Button */}
 <div className="col-md-3 d-flex align-items-end">
-        <button className="btn mt-1 btn-success" onClick={handleExcelUpload}>
-          Upload Excel
-        </button>
-      </div>
+  <button className="btn mt-1 btn-success" onClick={handleExcelUpload}>
+    Upload Excel
+  </button>
 
-  {/* <Col md={2}>
-    <Button variant="primary" onClick={handleExcelUpload}>
-      Upload Excel
-    </Button>
-  </Col> */}
+  {message && <div className="alert alert-info mt-3">{message}</div>}
+
+
+</div>
+
 
 <div className="col-md-3 d-flex align-items-end">
 <button  className="btn mt-1 btn-primary  mb-3" onClick={handleActivateAll}>
   Activate All
+</button>
+</div>
+
+
+<div className="col-md-3 d-flex align-items-end">
+<button  className="btn mt-1 btn-primary  mb-3" onClick={handleDeleteAll}>
+  Delete All
 </button>
 </div>
 
@@ -323,44 +438,12 @@ const handleExcelUpload = async () => {
     <th>Property Type</th>
     <th>Price</th>
     <th>City</th>
-    <th>Area</th>
-    <th>Owner Name</th>
-    <th>Email</th>
-    <th>Best Time To Call</th>
-    <th>Rental Property Address</th>
-    <th>State</th>
-    <th>District</th>
-    <th>Street Name</th>
-    <th>Door Number</th>
-    <th>Nagar</th>
-    <th>Alternate Phone</th>
-    <th>Country Code</th>
-    <th>Bank Loan</th>
-    <th>Negotiation</th>
-    <th>Ownership</th>
-    <th>Bedrooms</th>
-    <th>Kitchen</th>
-    <th>Kitchen Type</th>
-    <th>Balconies</th>
-    <th>Floor No</th>
-    <th>Area Unit</th>
-    <th>Property Approved</th>
-    <th>Property Age</th>
-    <th>Posted By</th>
-    <th>Facing</th>
-    <th>Sales Mode</th>
-    <th>Sales Type</th>
-    <th>Furnished</th>
-    <th>Lift</th>
-    <th>Attached Bathrooms</th>
-    <th>Western</th>
-    <th>Number of Floors</th>
-    <th>Car Parking</th>
+   
     <th>Features Property Status</th>
     <th>Status</th>
     <th>Actions</th>
                       <th>Active OR Pending</th>
-                      <th>Permenent Details</th>
+                      <th>Permenent Delete</th>
                       <th>View Details</th>
                       
                     </tr>
@@ -386,42 +469,7 @@ const handleExcelUpload = async () => {
                         <td>{property.propertyType}</td>
                         <td>{property.price}</td>
                         <td>{property.city}</td>
-                        <td>{property.totalArea}</td>
-                        <td>{property.ownerName}</td>
-                        <td>{property.email}</td>
-                        <td>{property.bestTimeToCall}</td>
-
-                         {/* Adding the new fields to the table */}
-      <td>{property.rentalPropertyAddress}</td>
-      <td>{property.state}</td>
-      <td>{property.district}</td>
-      <td>{property.streetName}</td>
-      <td>{property.doorNumber}</td>
-      <td>{property.nagar}</td>
-      <td>{property.alternatePhone}</td>
-      <td>{property.countryCode}</td>
-      <td>{property.bankLoan}</td>
-      <td>{property.negotiation}</td>
-      <td>{property.ownership}</td>
-      <td>{property.bedrooms}</td>
-      <td>{property.kitchen}</td>
-      <td>{property.kitchenType}</td>
-      <td>{property.balconies}</td>
-      <td>{property.floorNo}</td>
-      <td>{property.areaUnit}</td>
-      <td>{property.propertyApproved}</td>
-      <td>{property.propertyAge}</td>
-      <td>{property.postedBy}</td>
-      <td>{property.facing}</td>
-      <td>{property.salesMode}</td>
-      <td>{property.salesType}</td>
-      <td>{property.furnished}</td>
-      <td>{property.lift}</td>
-      <td>{property.attachedBathrooms}</td>
-      <td>{property.western}</td>
-      <td>{property.numberOfFloors}</td>
-      <td>{property.carParking}</td>
-      {/* <td>{property.featureStatus}</td> */}
+                      
       
                         {/* Feature Status Toggle Button */}
                         <td>
@@ -505,7 +553,7 @@ const handleExcelUpload = async () => {
   <Button
     variant="danger"
     size="sm"
-    onClick={() => handlePermanentDelete(property.phoneNumber, property.ppcId)}
+    onClick={() => handlePermanentDelete(property.ppcId)}
   >
    Permenent Delete
   </Button>

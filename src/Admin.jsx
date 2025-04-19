@@ -1,5 +1,8 @@
 
 
+
+
+// src/Admin.jsx
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
@@ -7,6 +10,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Admin.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAdminData } from './redux/adminSlice';
+import moment from 'moment';
 
 const Admin = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -18,13 +24,39 @@ const Admin = ({ onLogin }) => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const adminName = useSelector((state) => state.admin.name);
+  
+
+  // ✅ Record view on mount
+useEffect(() => {
+ const recordDashboardView = async () => {
+   try {
+     await axios.post(`${process.env.REACT_APP_API_URL}/record-view`, {
+       userName: adminName,
+       viewedFile: "Admin",
+       viewTime: moment().format("YYYY-MM-DD HH:mm:ss"), // optional, backend already handles it
+
+
+     });
+     console.log("Dashboard view recorded");
+   } catch (err) {
+     console.error("Failed to record dashboard view:", err);
+   }
+ };
+
+ if (adminName) {
+   recordDashboardView();
+ }
+}, [adminName]);
 
 
   const DEFAULT_CREDENTIALS = {
-    name: 'admin',
-    password: 'admin123',
-    role: 'admin',
-    userType: 'all',
+    name: '',
+    password: '',
+    role: '',
+    userType: '',
   };
 
   const handleInputChange = (e) => {
@@ -39,12 +71,22 @@ const Admin = ({ onLogin }) => {
     e.preventDefault();
     setLoading(true);
 
-    if (
+    const isDefaultLogin = (
       formData.name === DEFAULT_CREDENTIALS.name &&
       formData.password === DEFAULT_CREDENTIALS.password &&
       formData.role === DEFAULT_CREDENTIALS.role &&
       formData.userType === DEFAULT_CREDENTIALS.userType
-    ) {
+    );
+
+    if (isDefaultLogin) {
+      dispatch(setAdminData({
+        name: formData.name,
+        role: formData.role,
+        userType: formData.userType,
+        isVerified: true,
+      }));
+      localStorage.setItem('name', formData.name);
+
       toast.success('Default Admin Login successful!');
       navigate('/dashboard/statistics');
       setLoading(false);
@@ -61,6 +103,16 @@ const Admin = ({ onLogin }) => {
           },
         }
       );
+
+      dispatch(setAdminData({
+        name: formData.name,
+        role: formData.role,
+        userType: formData.userType,
+        isVerified: true,
+      }));
+
+      const savedName = localStorage.getItem('name');
+
       toast.success('Admin Login successful!');
       navigate('/dashboard/statistics');
       setFormData({ name: '', password: '', role: '', userType: '' });
@@ -73,12 +125,6 @@ const Admin = ({ onLogin }) => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    if (formData.name === DEFAULT_CREDENTIALS.name && formData.password === DEFAULT_CREDENTIALS.password) {
-      toast.success('Default Admin Login successful!');
-      navigate('/dashboard/statistics');
-    }
-}, [formData, navigate]); // Adjust the dependencies based on formData changes
 
   return (
     <>
@@ -86,7 +132,11 @@ const Admin = ({ onLogin }) => {
       <Container fluid className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
         <Row className="w-100">
           <Col md={7} className="d-none d-md-block">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" alt="Illustration" className="img-fluid" />
+            <img
+              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+              alt="Illustration"
+              className="img-fluid"
+            />
           </Col>
           <Col md={5} lg={4} className="d-flex flex-column align-items-left">
             <div className="p-4 rounded text-center">
@@ -159,12 +209,3 @@ const Admin = ({ onLogin }) => {
 };
 
 export default Admin;
-
-
-
-
-
-
-
-
-

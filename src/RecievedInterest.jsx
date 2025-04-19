@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function RecievedInterest() {
-//   return (
-//     <div>RecievedInterest</div>
-//   )
-// }
 
 
 

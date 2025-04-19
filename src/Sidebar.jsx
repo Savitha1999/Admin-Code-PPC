@@ -117,7 +117,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-0 mt-2" >
             <NavLink 
               to="/dashboard/adminreport" 
-              style={{color:"rgb(226,41,151)", fontWeight:"bold"}}              onClick={toggleSidebar} 
               className={({ isActive }) => (isActive ? "active-link rounded" : "")}
             >
               <FaSignInAlt size={20}/>
@@ -135,7 +134,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-0 mt-2" >
         <NavLink
           to="/dashboard/admin-notification"
-          style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar}
+           onClick={toggleSidebar}
           className={({ isActive }) => (isActive ? "active-link rounded" : "")}
         >
           <FaBell size={20}/>
@@ -276,7 +275,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <li className="p-0 mt-2" >
         <NavLink
           to="/dashboard/adminlog"
-          style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar}
+           onClick={toggleSidebar}
           className={({ isActive }) => (isActive ? "active-link rounded" : "")}
         >
           <FaFileAlt />
@@ -384,23 +383,38 @@ User Call List
       <li className="p-0 mt-2" >
         <NavLink
           to="/dashboard/searchcar"
-          style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar}
+ onClick={toggleSidebar}
           className={({ isActive }) => (isActive ? "active-link rounded" : "")}
         >
           <FaSearch />
           Search Property
         </NavLink>
       </li>
-      {/* <li className="p-0 mt-2" >
+      <li className="p-0 mt-2" >
         <NavLink
-          to="/dashboard/all-car"
-          style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar}
+          to="/dashboard/py-properties"
+          onClick={toggleSidebar}
           className={({ isActive }) => (isActive ? "active-link rounded" : "")}
         >
           <FaListAlt />
-          All Property
+          Py Properties
+        </NavLink>
+      </li>
+
+      
+{/* 
+
+      <li className="p-0 mt-2" >
+        <NavLink
+          to="/dashboard/featured-properties"
+          onClick={toggleSidebar}
+          className={({ isActive }) => (isActive ? "active-link rounded" : "")}
+        >
+          <FaUserCheck />
+          Featured Properties
         </NavLink>
       </li> */}
+
       <li className="p-0 mt-2" >
         <NavLink
           to="/dashboard/approved-car"
@@ -431,6 +445,19 @@ User Call List
           Pending Property
         </NavLink>
       </li>
+
+
+      <li className="p-0 mt-2" >
+        <NavLink
+          to="/dashboard/deleted-properties"
+        onClick={toggleSidebar}
+          className={({ isActive }) => (isActive ? "active-link rounded" : "")}
+        >
+          <FaTrashAlt />
+        Permenent Deleted Property
+        </NavLink>
+      </li>
+
       <li className="p-0 mt-2" >
         <NavLink
           to="/dashboard/removed-car"
@@ -585,24 +612,24 @@ User Call List
       Customer Care
     {/* </NavLink> */}
   </li>
-  <li className="p-0 mt-2">
+  {/* <li className="p-0 mt-2">
     <NavLink to="/dashboard/reported-cars" style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}>
       <FaCar />
       Reported Propertys
     </NavLink>
-  </li>
+  </li> */}
   <li className="p-0 mt-2">
     <NavLink to="/dashboard/callback-form" style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}>
       <FaClipboardList />
       Call Back Form
     </NavLink>
   </li>
-  <li className="p-0 mt-2">
+  {/* <li className="p-0 mt-2">
     <NavLink to="/dashboard/help" style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}>
       <FaRegQuestionCircle />
       Help
     </NavLink>
-  </li>
+  </li> */}
   <li className="p-3 mt-2  text-white"  style={{borderRadius:"5px",  background:"#8BC34A"}}>
     {/* <NavLink to="/dashboard/buyers-menu" style={{color:"#ABD6E9"}} onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}> */}
       <FaListAlt style={{marginRight:'10px '}}/>
@@ -822,7 +849,7 @@ User Call List
         </NavLink>
       </li>
       <li className="p-0 mt-2">
-        <NavLink to="/dashboard/free-user-lead" style={{color:"rgb(226,41,151)", fontWeight:"bold"}} onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}>
+        <NavLink to="/dashboard/free-user-lead"  onClick={toggleSidebar} className={({ isActive }) => (isActive ? "active-link rounded" : "")}>
           <RiUserFill size={20} /> Free User Lead
         </NavLink>
       </li>

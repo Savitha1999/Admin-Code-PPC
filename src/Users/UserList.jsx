@@ -248,7 +248,7 @@ const UserList = () => {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin-all`);
                 setUsers(response.data);
             } catch (err) {
-                toast.error('Error fetching users!');
+                alert('Error fetching users!');
             }
         };
         fetchUsers();

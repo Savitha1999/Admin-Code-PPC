@@ -514,52 +514,6 @@ const formattedCreatedAt = Date.now
 
 
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setStep("submitted"); // Show PricingPlans
-
-  //   // Ensure `ppcId` is available
-  //   if (!ppcId) {
-  //     alert("PPC-ID is required. Please refresh or try again.");
-  //     return;
-  //   }
-  
-  //   // Create FormData instance to send photos and video
-  //   const formDataToSend = new FormData();
-  
-  //   // Append PPC-ID first
-  //   formDataToSend.append("ppcId", ppcId);
-  
-  //   // Append form fields
-  //   Object.keys(formData).forEach((key) => {
-  //     formDataToSend.append(key, formData[key]);
-  //   });
-  
-  //   // Append photos
-  //   photos.forEach((photo) => {
-  //     formDataToSend.append("photos", photo);
-  //   });
-  
-  //   // Append video if available
-  //   if (video) {
-  //     formDataToSend.append("video", video);
-  //   }
-  
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.REACT_APP_API_URL}/update-property`,
-  //       formDataToSend,
-  //       { headers: { "Content-Type": "multipart/form-data" } }
-  //     );
-  //     setTimeout(() => {
-  //     }, 5000);
-    
-  //   } catch (error) {
-  //     console.error("Error saving property data:", error);
-  //   }
-  // };
-
-
 const handleSubmit = async (e) => {
     e.preventDefault();
     // setStep("submitted"); // Show PricingPlans

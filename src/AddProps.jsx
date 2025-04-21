@@ -42,7 +42,7 @@ function AddProperty() {
   const location = useLocation();
     const [currentStep, setCurrentStep] = useState(1);
     const [showPlans, setshowPlans] = useState(false);
-    // const [ppcId, setPpcId] = useState("");
+    const [ppcId, setPpcId] = useState("");
   const previewRef = useRef(null);
   const [priceInWords, setPriceInWords] = useState("");
   const fileInputRef = useRef(null); // Ref for input field
@@ -120,7 +120,7 @@ function AddProperty() {
   const [message, setMessage] = useState({ text: "", type: "" });
   const navigate = useNavigate();
  
-  const { phoneNumber,ppcId } = useParams();
+  const { phoneNumber } = useParams();
 
   const adminName = useSelector((state) => state.admin.name);
   
@@ -151,7 +151,7 @@ useEffect(() => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get("ppcId");
-    // setPpcId(id); // Store PPC-ID in state
+    setPpcId(id); // Store PPC-ID in state
 }, [location.search]); // Runs every time the URL changes
 
   const formRefs = {
@@ -613,30 +613,30 @@ const handleSubmit = async (e) => {
   };
   
 
-// useEffect(() => {
-//     if (!phoneNumber) {
-//     //   setMessage({ text: "Missing phone number.", type: "error" });
-//       return;
-//     }
+useEffect(() => {
+    if (!phoneNumber) {
+    //   setMessage({ text: "Missing phone number.", type: "error" });
+      return;
+    }
   
-//     const handleAddProperty = async () => {
-//       try {
-//         const response = await axios.post(`${process.env.REACT_APP_API_URL}/store-data`, {
-//           phoneNumber: phoneNumber,
-//         });
+    const handleAddProperty = async () => {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/store-id`, {
+          phoneNumber: phoneNumber,
+        });
   
-//         if (response.status === 201) {
-//           setPpcId(response.data.ppcId); // Store the ppcId in state
-//         //   setMessage({ text: `User added successfully! PPC-ID: ${response.data.ppcId}`, type: "success" });
-//         }
-//       } catch (error) {
-//         console.error("API Error:", error);
-//         // setMessage({ text: error.response?.data?.message || "Error adding user.", type: "error" });
-//       }
-//     };
+        if (response.status === 201) {
+          setPpcId(response.data.ppcId); // Store the ppcId in state
+        //   setMessage({ text: `User added successfully! PPC-ID: ${response.data.ppcId}`, type: "success" });
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+        // setMessage({ text: error.response?.data?.message || "Error adding user.", type: "error" });
+      }
+    };
   
-//     handleAddProperty();
-//   }, [phoneNumber]); // Runs when phoneNumber changes
+    handleAddProperty();
+  }, [phoneNumber]); // Runs when phoneNumber changes
   
   
 

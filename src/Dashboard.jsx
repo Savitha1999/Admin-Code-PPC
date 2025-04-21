@@ -543,7 +543,7 @@ const routes = [
   { path: "/notification-send", element: <NotificationForm /> },
   { path: "/profile-table", element: <ProfileTable /> },
   { path: "/user-call-list", element: <GetUserCalledList /> },
-  { path: "/add-props/:phoneNumber", element: <AddProps /> },
+  { path: "/add-props/:phoneNumber/:ppcId", element: <AddProps /> },
   { path: "/deleted-properties", element: <DeletedProperties /> },
   { path: "/py-properties", element: <PyProperty /> },
   { path: "/featured-properties", element: <FeaturedProperty /> },

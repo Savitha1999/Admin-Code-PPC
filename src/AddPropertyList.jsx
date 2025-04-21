@@ -122,19 +122,44 @@ useEffect(() => {
 
 
 
+  // const fetchProperties = async () => {
+  //   try {
+  //     const response = await axios.get(`${process.env.REACT_APP_API_URL}/fetch-all-datas`);
+  
+  //     console.log("Fetched properties:", response.data.users);
+  //     setProperties(response.data.users);
+  
+  //     // Set statuses
+  //     const initialStatuses = response.data.users.reduce((acc, property) => {
+  //       acc[property.ppcId] = property.status || "incomplete";
+  //       return acc;
+  //     }, {});
+      
+  //     setStatusProperties(initialStatuses);
+  //     localStorage.setItem("statusProperties", JSON.stringify(initialStatuses));
+  //   } catch (error) {
+  //     console.error("Error fetching properties:", error);
+  //   }
+  // };
+  
+
   const fetchProperties = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/fetch-all-datas`);
   
-      console.log("Fetched properties:", response.data.users);
-      setProperties(response.data.users);
+      const sortedProperties = response.data.users.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt); // newest first
+      });
+  
+      console.log("Sorted properties:", sortedProperties);
+      setProperties(sortedProperties);
   
       // Set statuses
-      const initialStatuses = response.data.users.reduce((acc, property) => {
-        acc[property.ppcId] = property.status || "incomplete";
+      const initialStatuses = sortedProperties.reduce((acc, property) => {
+        acc[property.ppcId] = property.status ;
         return acc;
       }, {});
-      
+  
       setStatusProperties(initialStatuses);
       localStorage.setItem("statusProperties", JSON.stringify(initialStatuses));
     } catch (error) {

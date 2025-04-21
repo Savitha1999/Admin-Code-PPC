@@ -33,21 +33,30 @@ const App = () => {
   }, [dispatch]);
   
   return (
-    <Router>
-      <Routes>
-        <Route path="/process" element={<Navigate to="/admin" />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/dashboard/*" element={<Dashboard />} />
+    // <Router>
+    //   <Routes>
+    //     <Route path="/process" element={<Navigate to="/admin" />} />
+    //     <Route path="/admin" element={<Admin />} />
+    //     <Route path="/dashboard/*" element={<Dashboard />} />
 
-         {/* <Route path="/edit-property" element={<EditProperty />} />
-        <Route path="/mode" element={<GetForm />} />
-        <Route path="/type" element={<AdminSetForm />} />
-        <Route path="/plan" element={<Plan />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/property-assistance" element={<PropertyAssistance />} /> */}
+    //      {/* <Route path="/edit-property" element={<EditProperty />} />
+    //     <Route path="/mode" element={<GetForm />} />
+    //     <Route path="/type" element={<AdminSetForm />} />
+    //     <Route path="/plan" element={<Plan />} />
+    //     <Route path="/detail" element={<Detail />} />
+    //     <Route path="/property-assistance" element={<PropertyAssistance />} /> */}
 
-      </Routes>
+    //   </Routes>
+    // </Router>
+
+    <Router basename="/process">
+    <Routes>
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/dashboard/*" element={<Dashboard />} />
+      <Route path="*" element={<Navigate to="/admin" replace />} />
+    </Routes>
     </Router>
+    
   );
 };
 
